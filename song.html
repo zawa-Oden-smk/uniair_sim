@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <title>収録楽曲一覧</title>
+  <link rel="stylesheet" type="text/css" href="song_style.css">
+  <link href="https://shogo82148.github.io/genjyuugothic-subsets/GenJyuuGothicX-Regular/GenJyuuGothicX-Regular.css" type="text/css" rel="stylesheet">
+  <link href="https://shogo82148.github.io/genjyuugothic-subsets/GenJyuuGothicL-Bold/GenJyuuGothicL-Bold.css" type="text/css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.7, user-scalable=yes">
+  <script type="text/javascript" src="song.js" charset="utf-8"></script>
+  <script type="text/javascript" src="songlist.js" charset="utf-8"></script>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script>
+    jQuery(document).ready(function() {
+     var offset = 100;
+     var duration = 500;
+      jQuery(window).scroll(function() {
+        if (jQuery(this).scrollTop() > offset) {
+        jQuery('.pagetop').fadeIn(duration);
+        } else {
+        jQuery('.pagetop').fadeOut(duration);
+        }
+      });
+      jQuery('.pagetop').click(function(event) {
+        event.preventDefault();
+        jQuery('html, body').animate({scrollTop: 0}, duration);
+        return false;
+      })
+    });
+  </script>
+</head>
+
+<body>
+  <h1 class="title">&nbsp;ユニエア 収録楽曲一覧&nbsp;</h1>
+
+  <ul class="caption">
+   <li>「No.」はアプリ内並べ替えの「楽曲解放順」に従っています。</li>
+   <li>&ensp;Fleek情報は実際のプレイ画面からの主観計測のため、ばらつきがある可能性があります。</li>
+   <li>「比1」は楽曲時間に対するFleek時間の割合を表しています。【例】楽曲時間 2分30秒(150秒)、Fleek時間 30秒 の場合：30/150 = 0.200</li>
+   <li>「比2」は楽曲ノーツ数に対するFleekノーツ数の割合を表しています。【例】楽曲ノーツ数 500、Fleekノーツ数 200 の場合：200/500 = 0.400</li>
+   <li>「Fleek時間」はFleek開始ノーツのPerfectタイミングから終了ノーツのPerfectタイミングまでの時間をカウントしています。</li>
+   <li>「Fleek期待値」はFleekスコアアップのシーンカードに対する期待値です。ざっくり計算のため、あくまで参考値です。</li>
+  </ul>
+
+  <div class="reset">
+    <input style="font-size: 12pt;" type="button" value="Reset" onclick="location.reload()"></input>
+  </div>
+
+  <table id="songtable" border="1">
+    <tr class="tablefirstline">
+      <th colspan="3"></th>
+      <th colspan="8">通常情報</th>
+      <th colspan="13">Fleek情報</th>
+    </tr>
+    <tr class="tablesecondline">
+      <th cmanSortBtn>No.</th>
+      <th cmanSortBtn>Color</th>
+      <th cmanSortBtn>楽曲名</th>
+      <th cmanSortBtn>ライブ</th>
+      <th cmanSortBtn>Lv.</th>
+      <th cmanSortBtn>楽曲時間</th>
+      <th cmanSortBtn>ノーツ数</th>
+      <th cmanSortBtn>ノーツ密度(/秒)</th>
+      <th cmanSortBtn>ライブ事務所ボーナス</th>
+      <th cmanSortBtn>楽曲ボーナス</th>
+      <th cmanSortBtn>サイリウム獲得倍率</th>
+      <th cmanSortBtn>時間</th>
+      <th cmanSortBtn>比1</th>
+      <th cmanSortBtn>比2</th>
+      <th cmanSortBtn>ノーツ数</th>
+      <th cmanSortBtn>ノーツ密度(/秒)</th>
+      <th cmanSortBtn>平均コンボ</th>
+      <th cmanSortBtn>Fleek期待値</th>
+      <th cmanSortBtn>開始時間</th>
+      <th cmanSortBtn>終了時間</th>
+      <th cmanSortBtn>開始ノーツ数</th>
+      <th cmanSortBtn>終了ノーツ数</th>
+      <th cmanSortBtn>開始コンボ</th>
+      <th cmanSortBtn>終了コンボ</th>
+    </tr>
+  </table>
+  
+ <div class="pagetop">∧</div>
+
+</body>
+
+</html>
