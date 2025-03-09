@@ -1,0 +1,172 @@
+body {
+    -webkit-text-size-adjust: 100%;
+    font-family: 'GenJyuuGothicX';
+    margin-bottom: 500px;
+    }
+
+/*タイトルの書式設定*/
+.title {
+    /*文字設定*/
+    white-space: nowrap;
+    font-family: 'GenJyuuGothicL';
+	font-size: xx-large;
+	margin-left: 30px;
+	margin-right: 30px;
+    /*装飾*/
+    text-decoration: underline; 
+    text-decoration-thickness: 0.6em;
+    text-decoration-color: #ff67f272; 
+    text-underline-offset: -0.4em;
+    text-decoration-skip-ink: none;
+}
+
+/*共通*/
+.subtitle{
+    margin-left: 20px;
+}
+
+/*説明*/
+.caption{
+    white-space: nowrap;
+    margin-left: 20px;
+    margin-top: -10px;
+}
+
+/*紹介欄*/
+.settable {
+    white-space: nowrap;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+.settable th{
+    padding: 2px 20px 2px 20px;
+    background-color: lightgrey;
+    border-radius: 8px;
+    text-align: center;
+}
+.skillstructure{
+    white-space: nowrap;
+    border-radius: 15px;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    list-style: "＞";
+}
+.Acolor{
+    color: blue;
+    font-weight: bold;
+}
+.Bcolor{
+    color: limegreen;
+    font-weight: bold;
+}
+.Ccolor{
+    color: orange;
+    font-weight: bold;
+}
+.Dcolor{
+    color: red;
+    font-weight: bold;
+}
+.Ecolor{
+    color: #ff67f2;
+    font-weight: bold;
+}
+
+/*期待値簡易計算欄*/
+.sumkitaichi{
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+#kitaichicalc{
+    margin-left: 10px;
+    color: red;
+    font-size: 25px;
+    font-weight: bold;
+}
+.kitaichiarea{
+    margin-left: 10px;
+    color: red;
+    font-size: 25px;
+    font-weight: bold;
+}
+#Fkitaichicalc{
+    margin-left: 10px;
+    color: red;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+/*通常強化欄*/
+.subtitle1{
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 30px;
+}
+.ktable1{
+    overflow-x: scroll;
+    white-space: nowrap;
+    text-align: center;
+    background-color: white;
+    border: 2px #666666 solid;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-left: 15px;
+    margin-right: 20px;
+    margin-top: -10px;
+    font-size: 16px;
+}
+.ktable1 th{
+    color: white;
+    background: #858585;
+    border-bottom: 2px #666666 solid;
+    padding: 0px 10px;
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+.ktable1 td{
+    padding: 2px 10px;
+}
+.ktable1 tr.bold{
+    border-bottom: 2px #666666 solid;
+}
+.ktable1 tr:nth-child(odd) td{
+    background-color: #eaeaea;
+}
+
+/*特殊強化欄*/
+.ktable2{
+    overflow-x: scroll;
+    white-space: nowrap;
+    text-align: center;
+    background-color: white;
+    border: 2px #666666 solid;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-left: 15px;
+    margin-right: 20px;
+    margin-top: -10px;
+    font-size: 16px;
+}
+.ktable2 th{
+    color: white;
+    background: #858585;
+    border-bottom: 2px #666666 solid;
+    padding: 0px 10px;
+    position: sticky;
+    top: 0;
+    left: 0;
+}
+.ktable2 td{
+    padding: 2px 10px;
+}
+.ktable2 tr:nth-child(odd) td{
+    background-color: #eaeaea;
+}
+.ktable2 tr td:nth-of-type(2){
+    color: #BF8F00;
+    font-weight: bold;
+}
