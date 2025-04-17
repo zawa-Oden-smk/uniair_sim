@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <title>スコアシミュレーター</title>
+  <link rel="stylesheet" type="text/css" href="Score_sim_style.css">
+  <link href="https://shogo82148.github.io/genjyuugothic-subsets/GenJyuuGothicX-Regular/GenJyuuGothicX-Regular.css" type="text/css" rel="stylesheet">
+  <link href="https://shogo82148.github.io/genjyuugothic-subsets/GenJyuuGothicL-Bold/GenJyuuGothicL-Bold.css" type="text/css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.7, user-scalable=yes">
+  <script type="text/javascript" async src="Score_sim_rev2.js" charset="utf-8"></script>
+  <script type="text/javascript" async src="Score_sim_master.js" charset="utf-8"></script>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/modules/histogram-bellcurve.js"></script>
+  <script src="https://code.highcharts.com/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+</head>
+
+<body>
+   <h1 class="title">&nbsp;スコアシミュレーター</h1>
+ 
+   <!--説明文-->
+   <ul class="caption">
+      <li>&ensp;Master AP時の最終スコアを算出。274曲/277曲 計算可（期間限定含む）。</li>
+      <li>&ensp;スキル発動/未発動は乱数で決定。Fleekスコアアップのシーンカードにも対応。</li>
+      <li>&ensp;試行回数の上限は100000回。計算時間的に30000回〜50000回くらいがベター。</li>
+      <li>&ensp;各楽曲の詳細情報：<a href="song.html" style="color:black">楽曲一覧</a></li>
+      <li>&ensp;シーンカード情報：<a href="uniair_cardlist.html" style="color:black">シーンカード一覧</a></li>
+      <li>&ensp;期待値情報：<a href="kitaichi.html" style="color:black">期待値一覧</a></li>
+   </ul>
+   <p class="date"><a href="Change Log.html" style="text-decoration:none; color:black">最終更新日</a>：2025/04/16 …「僕に続け(All/Lv.20)」、「何度　LOVE SONGの歌詞を読み返しただろう(Purple/Lv.23)」追加</p>
+
+   <!--楽曲情報/フロント情報設定-->
+   <table class="settable">
+      <tr><th>楽曲</th> <td>：</td> <td colspan="2"><select id="songselect" onchange="change()"></select></td> <td id="okngcheck"></td></tr>
+      <tr><th>フロント総合力</th> <td>：</td> <td><input type="number" value="100000" step="1" id="setFsougou" onchange="change()"></input><div class="error">0以上の数値（半角）を入力して下さい</div></td></tr>
+      <tr><th>グループ総合力</th> <td>：</td> <td><input type="number" value="1000000" step="1" id="setGsougou" onchange="change()"></input><div class="error">0以上の数値（半角）を入力して下さい</div></td></tr>
+      <tr><th>試行回数</th> <td>：</td> <td><input type="number" value="10000" step="1" min="1000" max="100000" id="setSikou" onchange="change()"></input><div class="error">1000〜100000の整数（半角）を入力して下さい</div></td></tr>
+      <tr><th rowspan="5">フロント</th> <td rowspan="5">：</td> <td style="width: 240px"><select id="setFront1" onchange="change()"></select></td> <td><select id="setBai1" onchange="change()"></select></td></tr>
+      <tr><td><select id="setFront2" onchange="change()"></select></td> <td><select id="setBai2" onchange="change()"></select></td></tr>
+      <tr><td><select id="setFront3" onchange="change()"></select></td> <td><select id="setBai3" onchange="change()"></select></td></tr>
+      <tr><td><select id="setFront4" onchange="change()"></select></td> <td><select id="setBai4" onchange="change()"></select></td></tr>
+      <tr><td><select id="setFront5" onchange="change()"></select></td> <td><select id="setBai5" onchange="change()"></select></td></tr>
+      <tr><th>フロント読出</th> <td>：</td> <td><select id="setFront0"></select><input type="button" value="反映" id="inputbutton" style="margin-left: 10px;" onclick="frontinput()"></input></td> <td></td></tr>
+   </table>
+ 
+   <!--ボタン欄-->
+   <div class="button_area">
+      <input type="button" value="計算開始" id="startbutton" onclick="output()"></input>
+      <!--
+      <input type="button" value="スキルカスタム" id="Scustombutton" onclick="Click_Sub()"></input>
+      -->
+   </div>
+
+   <!--スキルカスタム欄-->
+   <!--
+   <div id="skill_custom">
+      <ul class="caption2">
+         <li>&ensp;新スキルを想定して自由設定枠を作成しました。</li>
+         <li>&ensp;カスタムスキルはフロント保存欄では選択できません。</li>
+         <li>&ensp;発動時間が同じスキルは表スキル欄にまとめて記載してください。</li>
+         <li>&ensp;複合スキルの期待値はかなり雑な計算をしています。</li>
+         <li>&ensp;A秒おきにB%の確率でC秒間 スコアD%アップ&コンボボーナスE%アップ</li>
+      </ul>
+      <div class="tab_contents_box2">
+         <input id="tab_a2" type="radio" name="tab_menu2" checked><label class="tab_menu2" for="tab_a2">custom1</label>
+         <input id="tab_b2" type="radio" name="tab_menu2"><label class="tab_menu2" for="tab_b2">custom2</label>
+         <input id="tab_c2" type="radio" name="tab_menu2"><label class="tab_menu2" for="tab_c2">custom3</label>
+         <div id="tab_a_content2" class="tab_content2">
+            <table class="settable000">
+               <tr><td colspan="2"></td> <th>表スキル</th> <th>裏スキル</th></tr>
+               <tr><td>A（秒）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set11" onchange="calcgo1()"></input></td> <td><input type="tel" value="0" step="1" id="set16" onchange="calcgo1()"></input></td></tr>
+               <tr><td>B（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set12" onchange="calcgo1()"></input></td> <td><input type="tel" value="0" step="1" id="set17" onchange="calcgo1()"></input></td></tr>
+               <tr><td>C（秒）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set13" onchange="calcgo1()"></input></td> <td><input type="tel" value="0" step="1" id="set18" onchange="calcgo1()"></input></td></tr>
+               <tr><td>D（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set14" onchange="calcgo1()"></input></td> <td><input type="tel" value="0" step="1" id="set19" onchange="calcgo1()"></input></td></tr>
+               <tr><td>E（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set15" onchange="calcgo1()"></input></td> <td><input type="tel" value="0" step="1" id="set110" onchange="calcgo1()"></input></td></tr>
+            </table>
+            <div class="sumkitaichi1">
+               <div>期待値 ＝</div>
+               <div id="kitaichicalc1"></div>
+               <div class="kitaichiarea1">%</div>
+            </div>
+         </div>
+         <div id="tab_b_content2" class="tab_content2">
+            <table class="settable000">
+               <tr><td colspan="2"></td> <th>表スキル</th> <th>裏スキル</th></tr>
+               <tr><td>A（秒）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set21" onchange="calcgo2()"></input></td> <td><input type="tel" value="0" step="1" id="set26" onchange="calcgo2()"></input></td></tr>
+               <tr><td>B（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set22" onchange="calcgo2()"></input></td> <td><input type="tel" value="0" step="1" id="set27" onchange="calcgo2()"></input></td></tr>
+               <tr><td>C（秒）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set23" onchange="calcgo2()"></input></td> <td><input type="tel" value="0" step="1" id="set28" onchange="calcgo2()"></input></td></tr>
+               <tr><td>D（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set24" onchange="calcgo2()"></input></td> <td><input type="tel" value="0" step="1" id="set29" onchange="calcgo2()"></input></td></tr>
+               <tr><td>E（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set25" onchange="calcgo2()"></input></td> <td><input type="tel" value="0" step="1" id="set210" onchange="calcgo2()"></input></td></tr>
+            </table>
+            <div class="sumkitaichi2">
+               <div>期待値 ＝</div>
+               <div id="kitaichicalc2"></div>
+               <div class="kitaichiarea2">%</div>
+            </div>
+         </div>
+         <div id="tab_c_content2" class="tab_content2">
+            <table class="settable000">
+               <tr><td colspan="2"></td> <th>表スキル</th> <th>裏スキル</th></tr>
+               <tr><td>A（秒）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set31" onchange="calcgo3()"></input></td> <td><input type="tel" value="0" step="1" id="set36" onchange="calcgo3()"></input></td></tr>
+               <tr><td>B（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set32" onchange="calcgo3()"></input></td> <td><input type="tel" value="0" step="1" id="set37" onchange="calcgo3()"></input></td></tr>
+               <tr><td>C（秒）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set33" onchange="calcgo3()"></input></td> <td><input type="tel" value="0" step="1" id="set38" onchange="calcgo3()"></input></td></tr>
+               <tr><td>D（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set34" onchange="calcgo3()"></input></td> <td><input type="tel" value="0" step="1" id="set39" onchange="calcgo3()"></input></td></tr>
+               <tr><td>E（%）</td> <td>：</td> <td><input type="tel" value="0" step="1" id="set35" onchange="calcgo3()"></input></td> <td><input type="tel" value="0" step="1" id="set310" onchange="calcgo3()"></input></td></tr>
+            </table>
+            <div class="sumkitaichi3">
+               <div>期待値 ＝</div>
+               <div id="kitaichicalc3"></div>
+               <div class="kitaichiarea3">%</div>
+            </div>
+         </div>
+      </div>
+      <p style="margin-left: 40px;">■現在の設定</p>
+      <table class="skill_custom_table" border="1">
+         <tr><th rowspan="2"></th> <th colspan="5">表スキル</th> <th colspan="5">裏スキル</th></tr>
+         <tr><th>A</th> <th>B</th> <th>C</th> <th>D</th> <th>E</th> <th>A</th> <th>B</th> <th>C</th> <th>D</th> <th>E</th></tr>
+         <tr><th>custom1</th> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td></tr>
+         <tr><th>custom2</th> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td></tr>
+         <tr><th>custom3</th> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td> <td></td></tr>
+      </table>
+   </div>
+   -->
+ 
+   <!--グラフ描画エリア-->
+   <div style="width: 710px;" id="container"></div>
+ 
+   <!--計算結果表示-->
+   <div class="tableset">
+      <table class="setreturntable" border="1">
+         <tr><th>フロント総合力</th> <td id="setreturn1"></td></tr>
+         <tr><th>グループ総合力</th> <td id="setreturn2"></td></tr>
+         <tr><th>フロント編成</th> <td><div id="setreturn31"></div><div id="setreturn32"></div></div><div id="setreturn33"></div></div><div id="setreturn34"></div></div><div id="setreturn35"></div></td></tr>
+         <tr><th>試行回数</th> <td id="setreturn4"></td></tr>
+      </table>
+      <table class="resulttable" border="1">
+        <tr><th colspan="2">累積分布</th> <th>予想スコア</th></tr>
+        <tr><td>MIN</td> <td>-</td> <td id="result0"></td></tr>
+        <tr><td>-3σ</td> <td>0.13%</td> <td id="result1"></td></tr>
+        <tr><td>-2σ</td> <td>2.28%</td> <td id="result2"></td></tr>
+        <tr><td>-σ</td> <td>15.87%</td> <td id="result3"></td></tr>
+        <tr><td>0</td> <td>50.00%</td> <td id="result4"></td></tr>
+        <tr><td>σ</td> <td>84.13%</td> <td id="result5"></td></tr>
+        <tr><td>2σ</td> <td>97.72%</td> <td id="result6"></td></tr>
+        <tr><td>3σ</td> <td>99.87%</td> <td id="result7"></td></tr>
+        <tr><td>MAX</td> <td>-</td> <td id="result8"></td></tr>
+      </table>
+   </div>
+ 
+   <!--フロント情報保存-->
+   <div class="tab_contents_box">
+      <input id="tab_a" type="radio" name="tab_menu" checked><label class="tab_menu" for="tab_a">フロント1</label>
+      <input id="tab_b" type="radio" name="tab_menu"><label class="tab_menu" for="tab_b">フロント2</label>
+      <input id="tab_c" type="radio" name="tab_menu"><label class="tab_menu" for="tab_c">フロント3</label>
+      <input id="tab_d" type="radio" name="tab_menu"><label class="tab_menu" for="tab_d">フロント4</label>
+      <input id="tab_e" type="radio" name="tab_menu"><label class="tab_menu" for="tab_e">フロント5</label>
+      <input id="tab_f" type="radio" name="tab_menu"><label class="tab_menu" for="tab_f">フロント6</label>
+      <div id="tab_a_content" class="tab_content">
+         <table class="settable001">
+             <tr><th rowspan="5" style="width: 100px; background-color: lightblue; border-radius: 10px;">フロント</th> <td rowspan="5">：</td> <td style="width: 240px"><select id="setFront11"></select></td> <td><select id="setBai11"></select></td></tr>
+             <tr><td><select id="setFront12"></select></td> <td><select id="setBai12"></select></td></tr>
+             <tr><td><select id="setFront13"></select></td> <td><select id="setBai13"></select></td></tr>
+             <tr><td><select id="setFront14"></select></td> <td><select id="setBai14"></select></td></tr>
+             <tr><td><select id="setFront15"></select></td> <td><select id="setBai15"></select></td></tr>
+         </table>
+      </div>
+      <div id="tab_b_content" class="tab_content">
+         <table class="settable002">
+             <tr><th rowspan="5" style="width: 100px; background-color: lightblue; border-radius: 10px;">フロント</th> <td rowspan="5">：</td> <td style="width: 240px"><select id="setFront21"></select></td> <td><select id="setBai21"></select></td></tr>
+             <tr><td><select id="setFront22"></select></td> <td><select id="setBai22"></select></td></tr>
+             <tr><td><select id="setFront23"></select></td> <td><select id="setBai23"></select></td></tr>
+             <tr><td><select id="setFront24"></select></td> <td><select id="setBai24"></select></td></tr>
+             <tr><td><select id="setFront25"></select></td> <td><select id="setBai25"></select></td></tr>
+          </table>
+      </div>
+      <div id="tab_c_content" class="tab_content">
+         <table class="settable003">
+             <tr><th rowspan="5" style="width: 100px; background-color: lightblue; border-radius: 10px;">フロント</th> <td rowspan="5">：</td> <td style="width: 240px"><select id="setFront31"></select></td> <td><select id="setBai31"></select></td></tr>
+             <tr><td><select id="setFront32"></select></td> <td><select id="setBai32"></select></td></tr>
+             <tr><td><select id="setFront33"></select></td> <td><select id="setBai33"></select></td></tr>
+             <tr><td><select id="setFront34"></select></td> <td><select id="setBai34"></select></td></tr>
+             <tr><td><select id="setFront35"></select></td> <td><select id="setBai35"></select></td></tr>
+           </table>
+      </div>
+      <div id="tab_d_content" class="tab_content">
+         <table class="settable004">
+             <tr><th rowspan="5" style="width: 100px; background-color: lightblue; border-radius: 10px;">フロント</th> <td rowspan="5">：</td> <td style="width: 240px"><select id="setFront41"></select></td> <td><select id="setBai41"></select></td></tr>
+             <tr><td><select id="setFront42"></select></td> <td><select id="setBai42"></select></td></tr>
+             <tr><td><select id="setFront43"></select></td> <td><select id="setBai43"></select></td></tr>
+             <tr><td><select id="setFront44"></select></td> <td><select id="setBai44"></select></td></tr>
+             <tr><td><select id="setFront45"></select></td> <td><select id="setBai45"></select></td></tr>
+          </table>
+      </div>
+      <div id="tab_e_content" class="tab_content">
+         <table class="settable005">
+             <tr><th rowspan="5" style="width: 100px; background-color: lightblue; border-radius: 10px;">フロント</th> <td rowspan="5">：</td> <td style="width: 240px"><select id="setFront51"></select></td> <td><select id="setBai51"></select></td></tr>
+             <tr><td><select id="setFront52"></select></td> <td><select id="setBai52"></select></td></tr>
+             <tr><td><select id="setFront53"></select></td> <td><select id="setBai53"></select></td></tr>
+             <tr><td><select id="setFront54"></select></td> <td><select id="setBai54"></select></td></tr>
+             <tr><td><select id="setFront55"></select></td> <td><select id="setBai55"></select></td></tr>
+           </table>
+      </div>
+      <div id="tab_f_content" class="tab_content">
+         <table class="settable006">
+             <tr><th rowspan="5" style="width: 100px; background-color: lightblue; border-radius: 10px;">フロント</th> <td rowspan="5">：</td> <td style="width: 240px"><select id="setFront61"></select></td> <td><select id="setBai61"></select></td></tr>
+             <tr><td><select id="setFront62"></select></td> <td><select id="setBai62"></select></td></tr>
+             <tr><td><select id="setFront63"></select></td> <td><select id="setBai63"></select></td></tr>
+             <tr><td><select id="setFront64"></select></td> <td><select id="setBai64"></select></td></tr>
+             <tr><td><select id="setFront65"></select></td> <td><select id="setBai65"></select></td></tr>
+           </table>
+      </div>
+   </div>
+   
+   <!--保存ボタン-->
+   <div>
+   <input type="button" value="保存" id="savebutton" onclick="frontsave()"></input>
+   <a class="savecaption">フロント情報をCookieに保存（保存期間100日）</a>
+   </div>
+ 
+   <!--グラフ設定-->
+   <script>
+    let btn = document.querySelector('#startbutton');
+    btn.addEventListener('click', function () {
+       Highcharts.chart('container', {
+          chart: {
+             type: 'column',
+          },
+          title: {
+             text: song[document.getElementById("songselect").value],
+          },
+          xAxis: {
+             min: sigmaresult[0]-50000,
+             max: sigmaresult[parseInt(scoresimloop)-1]+50000,                
+             title: {
+                text: 'x',
+             },
+             plotLines:[
+             {
+                color: '#FF0000',
+                dashStyle: 'Dot',
+                width: 1,         
+                value: sigma[0],
+                label: {     
+                   text: "-3σ"
+                },    
+             },
+             { 
+                color: '#FF0000',
+                dashStyle: 'ShortDash',
+                width: 1,
+                value: sigma[1],
+                label: {
+                   text: "-2σ"
+                },
+             },
+             {
+                color: '#FF0000',
+                dashStyle: 'Dash',
+                width: 1,
+                value: sigma[2],
+                label: {
+                   text: "-σ"
+                },
+             },
+             {
+                color: '#FF0000',
+                dashStyle: 'Solid',
+                width: 1,
+                value: sigma[3],
+                label: {
+                   text: "0"
+                },
+             },
+             {
+                color: '#FF0000',
+                dashStyle: 'Dash',
+                width: 1,
+                value: sigma[4],
+                label: {
+                   text: "σ"
+                },
+             },
+             {
+                color: '#FF0000',
+                dashStyle: 'ShortDash',
+                width: 1,
+                value: sigma[5],
+                label: {
+                   text: "2σ"
+                },
+             },
+             {
+                color: '#FF0000',
+                dashStyle: 'Dot',
+                width: 1,
+                value: sigma[6],
+                label: {
+                   text: "3σ"
+                },
+             },
+          ]
+          },
+          yAxis: {
+             min: 0,
+             title: {
+                text: 'P(X=x)',
+             }
+          },
+          tooltip: {
+             headerFormat: '<table width=120><tr><td>x= <span style="color:#33f;">{point.key:.0f}</span></td></tr>',
+             pointFormat: '<tr><td style="padding:0;text-align:center;"><b style="font-size:18px">{point.px:.2f}%</b></td></tr>',
+             footerFormat: '</table>',
+             shared: true,
+             useHTML: true
+          },
+          plotOptions: {
+             column: {
+                pointPadding: 0,
+                borderWidth: 0,
+                groupPadding: 0,
+                shadow: false,
+             },
+          },
+          series: [{
+             type: 'column',
+             turboThreshold: 0,
+             showInLegend: false,
+             name: 'data',
+             data: Graphdata,
+             pointStart: 0,
+          }]
+       });
+    });
+   </script>
+</body>
+ 
+</html>
+ 
