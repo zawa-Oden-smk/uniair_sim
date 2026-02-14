@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <title>シーンカード一覧</title>
+  <link rel="stylesheet" type="text/css" href="uniair_cardlist_style.css">
+  <link href="https://shogo82148.github.io/genjyuugothic-subsets/GenJyuuGothicX-Regular/GenJyuuGothicX-Regular.css" type="text/css" rel="stylesheet">
+  <link href="https://shogo82148.github.io/genjyuugothic-subsets/GenJyuuGothicL-Bold/GenJyuuGothicL-Bold.css" type="text/css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.7, user-scalable=yes">
+  <script type="text/javascript" src="maintable.js" charset="utf-8"></script>
+  <script type="text/javascript" src="uniair_cardlist.js" charset="utf-8"></script>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+  <script>
+    jQuery(document).ready(function() {
+     var offset = 100;
+     var duration = 500;
+      jQuery(window).scroll(function() {
+        if (jQuery(this).scrollTop() > offset) {
+        jQuery('.pagetop').fadeIn(duration);
+        } else {
+        jQuery('.pagetop').fadeOut(duration);
+        }
+      });
+      jQuery('.pagetop').click(function(event) {
+        event.preventDefault();
+        jQuery('html, body').animate({scrollTop: 0}, duration);
+        return false;
+      })
+    });
+  </script>
+</head>
+
+<body>
+  <h1 class="title">&nbsp;&nbsp;ユニエア シーンカード一覧（SSR/SSR+）</h1>
+
+  <ul class="caption">
+   <li>&ensp;ディスコグラフィー実装済のシーンカードはSSR+のみ記載。SSR+強化前は各ステータス-750になります。</li>
+   <li>&ensp;セレクターでの絞り込み、昇降ボタンでの各項目の並び替えができます。（Resetボタンで最初の状態に戻ります）</li>
+   <li>「全ステ」は才能開花100%（最大開花できるものは最大開花後）、スキルLv.最大にした場合のシーンカード値を意味します。</li>
+   <li>&ensp;誕生日シーンカードのセンタースキルはメンバー指定のため「All35%(M)」と記載し、単色の「All35%」と区別しています。</li>
+   <li>「HAPPY BIRTHDAY ○」はそれぞれ誕生日シーンカードの○周目を表しています。櫻坂三期生/日向坂四期生は3周目始まり、櫻坂四期生/日向坂五期生は5周目始まりとしています。</li>
+  </ul>
+
+  <div class="mothersel">
+   <div class="sel1"><input style="font-size: 12pt;" type="button" value="Reset" onclick="location.reload()"></input></div>
+   <div class="sel2"><label>Color：</label><select id="color" onChange="filter()"></select></div>
+   <div class="sel2"><label>シーン：</label><select id="scine" onChange="filter()"></select></div>
+   <div class="sel2"><label>メンバー：</label><select id="member" onChange="filter()"></select></div>
+  </div>
+  <div class="mothersel" style="margin-left:83.3px">
+   <div class="sel2"><label>期待値：</label><select id="kitai" onChange="filter()"></select></div>
+   <div class="sel2"><label>センタースキル：</label><select id="cs" onChange="filter()"></select></div>
+  </div>
+
+  <table id="maintable" border="1">
+    <tr class="tablefirstline">
+      <th cmanSortBtn>No.</th>
+      <th cmanSortBtn>Color</th>
+      <th cmanSortBtn>シーン</th>
+      <th cmanSortBtn>メンバー</th>
+      <th cmanSortBtn>期待値</th>
+      <th cmanSortBtn>Vo</th>
+      <th cmanSortBtn>Da</th>
+      <th cmanSortBtn>Pe</th>
+      <th cmanSortBtn>全ステ</th>
+      <th cmanSortBtn>センタースキル</th>
+      <th cmanSortBtn>Pairメンバー</th>
+      <th cmanSortBtn>Véaut対応色</th>
+      <th cmanSortBtn>スキル</th>
+      <th cmanSortBtn>グループ</th>
+    </tr>
+  </table>
+  
+ <div class="pagetop">∧</div>
+
+</body>
+
+</html>
